@@ -160,7 +160,10 @@ function closeDeleteModal() {
 
 function confirmDelete() {
     if (contactIdToDelete.value) {
-        router.delete(route('contacts.destroy', contactIdToDelete.value), {
+        console.log('ID du contact à supprimer:', contactIdToDelete.value);
+        const url = route('contacts.destroy', contactIdToDelete.value);
+        console.log('URL générée pour DELETE:', url);
+        router.delete(url, {
             onSuccess: () => {
                 closeDeleteModal();
             },
@@ -168,6 +171,8 @@ function confirmDelete() {
                 console.log('Erreur lors de la suppression:', errors);
             },
         });
+    } else {
+        console.log('Erreur: Aucun ID de contact défini');
     }
 }
 </script>

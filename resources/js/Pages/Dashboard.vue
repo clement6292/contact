@@ -1,6 +1,15 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
+import { onMounted } from 'vue';
+
+onMounted(()=>{
+    Echo.channel('broadcast-test')
+        .listen('TestEvent',(e)=>{
+            console.log(e);
+            
+        })
+})
 </script>
 
 <template>

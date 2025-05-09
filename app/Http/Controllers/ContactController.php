@@ -6,6 +6,11 @@ use App\Models\Contact;
 use App\Services\CountryService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
+use App\Notifications\ContactCreatedNotification;
+use App\Events\ContactEvent;
+use App\Events\ContactUpdatedEvent;
+use App\Events\ContactDeletedEvent;
 
 class ContactController extends Controller
 {
@@ -19,7 +24,7 @@ class ContactController extends Controller
 
     public function index()
 {
-    $contacts = Contact::paginate(6); // 6 contacts par page
+    $contacts = Contact::latest()->paginate(9);// 6 contacts par page
     $countries = $this->countryService->getCountries();
     return Inertia::render('Contacts/Index', [
         'contacts' => $contacts,
@@ -46,7 +51,13 @@ class ContactController extends Controller
             'country_fly' => 'nullable|string',
         ]);
 
-        Contact::create($validated);
+        $contact=Contact::create($validated);
+
+        $user = Auth::user();
+        $user->notify(new ContactCreatedNotification($contact));
+
+
+        // dd("avant rediredtion");
 
         return redirect()->route('contacts.index')->with('success', 'Contact créé avec succès.');
     }
@@ -73,12 +84,18 @@ class ContactController extends Controller
         ]);
 
         $contact->update($validated);
+
+        event(new ContactUpdatedEvent($contact));
+
         return redirect()->route('contacts.index')->with('success', 'Contact mis à jour avec succès.');
     }
 
     public function destroy(Contact $contact)
     {
         $contact->delete();
+
+        event(new ContactDeletedEvent($contact));
+
         return redirect()->route('contacts.index')->with('success', 'Contact supprimé avec succès.');
     }
 }
