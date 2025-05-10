@@ -2,14 +2,27 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { onMounted } from 'vue';
+onMounted(() =>{
+    window.Echo.channel('contact')
+    .listen('ContactEvent', (event) => {
+            console.log(event);
+        });
 
-onMounted(()=>{
-    Echo.channel('broadcast-test')
-        .listen('TestEvent',(e)=>{
-            console.log(e);
-            
-        })
-})
+
+
+    window.Echo.channel('Contact_delete')
+    .listen('ContactDeletedEvent', (e) => {
+        console.log(e);
+        
+    });
+
+    window.Echo.channel('Contact_update')
+    .listen('ContactUpdatedEvent', (ev) => {
+        console.log(ev);
+        
+    })
+});
+
 </script>
 
 <template>

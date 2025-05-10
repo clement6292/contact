@@ -7,11 +7,12 @@ use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use App\Models\User;
 
-class ContactEvent
+class ContactEvent implements ShouldBroadcastNow
 {
     use Dispatchable, SerializesModels;
 
@@ -32,7 +33,23 @@ class ContactEvent
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('channel-name'),
+            new Channel('contact'),
+        ];
+    }
+
+    public function broadcastWith(): array
+    {
+        return [
+            'contact' => [
+                'id' => $this->contact->id,
+                'name' => $this->contact->name,
+                'email' => $this->contact->email,
+                'phone' => $this->contact->phone,
+                'company' => $this->contact->company,
+                'country' => $this->contact->country,
+                'country_fly' => $this->contact->country_fly,
+                'created_at' => $this->contact->created_at,
+            ],
         ];
     }
 }

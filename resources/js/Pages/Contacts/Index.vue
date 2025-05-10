@@ -123,14 +123,24 @@ const props = defineProps({
     },
 });
 
+// État réactif pour les contacts
+const contacts = ref(props.contacts);
+
 // État du modal
 const showDeleteModal = ref(false);
 const contactIdToDelete = ref(null);
 
-// Afficher props.countries et props.contacts dans la console
+// Écouter les événements de création
 onMounted(() => {
     console.log('props.countries:', props.countries);
     console.log('props.contacts:', props.contacts);
+
+    window.Echo.channel('contact')
+        .listen('ContactEvent', (event) => {
+            console.log('Nouveau contact reçu:', event);
+            // Ajouter le nouveau contact à la liste
+            contacts.value.data.unshift(event.contact);
+        });
 });
 
 function getCountryFlag(countryName) {

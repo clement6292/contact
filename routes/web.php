@@ -18,9 +18,9 @@ Route::get('/', function () {
 });
 
 
-Route::get('/test', function(){
-   event(new TestEvent("Hello"));
-});
+// Route::get('/test', function(){
+//    event(new TestEvent("Passage de websocket"));
+// });
 
 
 Route::get('/dashboard', function () {

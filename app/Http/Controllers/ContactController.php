@@ -58,6 +58,9 @@ class ContactController extends Controller
 
 
         // dd("avant rediredtion");
+        // broadcast (new ContactEvent($contact ,Auth::user()));
+
+        event(new ContactEvent($contact));
 
         return redirect()->route('contacts.index')->with('success', 'Contact créé avec succès.');
     }
